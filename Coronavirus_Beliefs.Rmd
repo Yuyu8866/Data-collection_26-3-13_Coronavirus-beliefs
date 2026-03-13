@@ -7,4 +7,13 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(readr)
+
+d_coronavirus <- read.csv("../data/life-under-lockdown-wave2-extract.csv")
 ```
+
+#Hypothesis
+H1 Gender is associated with number of conspiracy beliefs
+

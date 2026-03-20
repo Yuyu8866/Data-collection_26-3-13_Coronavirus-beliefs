@@ -10,20 +10,24 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(dplyr)
 library(readr)
+library(ggplot2)
+
+options(scipen = 999)
 
 d_coronavirus <- read.csv("../data/life-under-lockdown-wave2-extract.csv")
 ```
 
 #Hypothesis
 H1 Gender is associated with number of conspiracy beliefs
+H2 Age is associated with number of conspiracy beliefs regarding coronavirus
 
-#Findings
+#Analysis
 ```{r}
 d_coronavirus %>%
   group_by(gender) %>%
   summarise(
     n = n(),
-    Mdn = median(beliefs),
+    Mdn = median(beliefs, na.rm = TRUE),
     M = mean(beliefs),
     SD = sd(beliefs)
   )
@@ -36,8 +40,34 @@ d_coronavirus %>%
   t.test(
     beliefs ~ gender,
     data = .
+  #把前面 pipe 传过来的那个筛选后的数据，作为 data 使用。
   )
 ```
 
-#Discovery
+#Findings
 In the sample, males held more conspiracy beliefs regarding coronavirus than females, but this was not statistically significant, t(494.31) = -1.201, p = .230.
+
+
+#Hypothesis 2
+```{r}
+d_coronavirus %>%
+  ggplot(
+    aes(
+      x = age,
+      y = beliefs
+    )
+  ) + 
+  geom_jitter()
+```
+
+
+```{r}
+d_coronavirus %>%
+cor.test(
+    ~ beliefs + age,
+    data = .
+)
+```
+
+#Findings
+Age is negatively associated with number of conspiracy belifes about coronavirus, r(498) = .24, p < .001.

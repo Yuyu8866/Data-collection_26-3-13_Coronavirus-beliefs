@@ -20,8 +20,9 @@ d_coronavirus <- read.csv("../data/life-under-lockdown-wave2-extract.csv")
 #Hypothesis
 H1 Gender is associated with number of conspiracy beliefs
 H2 Age is associated with number of conspiracy beliefs regarding coronavirus
+H3 Reliance on facebook for information about coronavirus is associated with number of conspiracy beliefs regarding coronavirus
 
-#Analysis
+#Analysis 1
 ```{r}
 d_coronavirus %>%
   group_by(gender) %>%
@@ -44,7 +45,7 @@ d_coronavirus %>%
   )
 ```
 
-#Findings
+#Findings 1
 In the sample, males held more conspiracy beliefs regarding coronavirus than females, but this was not statistically significant, t(494.31) = -1.201, p = .230.
 
 
@@ -69,5 +70,49 @@ cor.test(
 )
 ```
 
-#Findings
+#Findings 2
 Age is negatively associated with number of conspiracy belifes about coronavirus, r(498) = .24, p < .001.
+
+
+#Hypothesis 3
+```{r}
+knowledge_level <- c(
+  "Nothing at all", 
+  "Not very much", 
+  "A fair amount", 
+  "A great deal")
+
+d_coronavirus <- d_coronavirus %>%
+  mutate(
+    know_facebook = know_facebook %>%
+      ordered(
+        levels = knowledge_level
+      )
+  )
+
+d_coronavirus %>%
+  ggplot(
+    aes(
+      x = know_facebook,
+      y = beliefs
+    )
+  ) + 
+  geom_violin()
+```
+
+```{r}
+d_coronavirus <- d_coronavirus %>% 
+  mutate(
+    know_facebook_coded = know_facebook %>% 
+      as.numeric()
+  )
+
+d_coronavirus %>%
+ cor.test(
+    ~ beliefs + know_facebook_coded,
+    data = .,
+    method = "spearman"
+)
+```
+#Findings 3
+Reliance on Facebook for knowledge of coronavirus is positively associated with number of conspiracy beliefs about coronavirus, rs(498) = .23, p < .001.
